@@ -1,26 +1,17 @@
-// import * as React from "react";
-// import * as ReactDOM from "react-dom";
-//
-// import { Hello } from "./components/HelloWorldPlugin";
-//
-// ReactDOM.render(
-//     <Hello compiler="TypeScript" framework="React" />,
-//     document.getElementById("example")
-// );
 
+/// <reference types="webpack" />
 
-export class HelloWorldPlugin {
-  options: any;
+class HelloWorldPlugin {
 
-  constructor(options : any) {
-    this.options = options;
+  constructor() {
+  //  super();
   }
 
-  apply(compiler : any) {
+  apply(compiler : webpack.Compiler) {
     compiler.plugin("done", () => {
-      console.log("Hello world");
+      console.log(compiler);
     })
   }
 }
 
-// module.exports = HelloWorldPlugin
+module.exports = HelloWorldPlugin;
