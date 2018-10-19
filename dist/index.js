@@ -1,6 +1,5 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-const path = require('path');
 const fs = require('fs');
 function matchAll(str, regex) {
     var res = [];
@@ -18,16 +17,15 @@ function matchAll(str, regex) {
     return res;
 }
 class FBarrelPlugin {
-    constructor() {
-        //  super();
+    constructor(srcPath) {
+        this.srcPath = srcPath;
     }
     apply(compiler) {
         compiler.plugin("beforeCompile", () => {
-            const dir = "/home/developer/Projects/re-style/src/main";
-            const barrelDir = "/home/developer/Projects/re-style/src/main";
+            const dir = this.srcPath;
             const fileList = this.listFiles(dir, true);
             console.log("Files listed");
-            this.writeBarrel(barrelDir, dir, fileList);
+            this.writeBarrel(this.srcPath, this.srcPath, fileList);
             console.log("Barrel written");
         });
     }

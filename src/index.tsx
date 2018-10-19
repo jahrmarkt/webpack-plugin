@@ -1,5 +1,4 @@
 import {Compiler} from "webpack"
-const path = require('path');
 const fs = require('fs');
 
 
@@ -22,18 +21,19 @@ function matchAll(str:string, regex:RegExp) {
 
 class FBarrelPlugin {
 
-  constructor() {
-  //  super();
+  srcPath : string;
+
+  constructor(srcPath:string) {
+    this.srcPath = srcPath;
   }
 
   apply(compiler : Compiler) {
     compiler.plugin("beforeCompile", () => {
 
-      const dir = "/home/developer/Projects/re-style/src/main";
-      const barrelDir = "/home/developer/Projects/re-style/src/main";
+      const dir = this.srcPath
       const fileList = this.listFiles(dir, true)
       console.log("Files listed");
-      this.writeBarrel(barrelDir, dir,fileList);
+      this.writeBarrel(this.srcPath, this.srcPath,fileList);
       console.log("Barrel written");
     })
   }
