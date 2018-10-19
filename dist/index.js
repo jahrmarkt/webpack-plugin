@@ -45,24 +45,25 @@ function matchAll(str, regex) {
     var m;
     if (regex.global) {
         while (m = regex.exec(str)) {
-            res.push(m[1]);
+            res.push(m[2]);
         }
     }
     else {
         if (m = regex.exec(str)) {
-            res.push(m[1]);
+            res.push(m[2]);
         }
     }
     return res;
 }
-class HelloWorldPlugin {
+class FBarrelPlugin {
     constructor() {
         //  super();
     }
     apply(compiler) {
         compiler.plugin("beforeCompile", () => {
-            var regex = /export default (class|interface|type )?(\\w+)/g;
-            console.log(matchAll(badgeContent, regex));
+            // var regex = RegExp("export default (class|interface|type )?(\\w+)", "g");
+            //
+            // console.log(matchAll(badgeContent, regex));
             const dir = "/home/developer/Projects/re-style/src/main";
             const barrelDir = "/home/developer/Projects/re-style/src/main";
             const fileList = this.listFiles(dir, true);
@@ -129,28 +130,26 @@ class HelloWorldPlugin {
         var exports = [];
         var defaultExportName = "";
         // if (this.once) {
-        const defaultMatch = content.match(RegExp(`export default (class|interface|type )?(\\w+)`));
+        const defaultResult = matchAll(content, RegExp(`export default (class|interface|type )?(\\w+)`, "g"));
         //console.log(defaultResult);
-        if (defaultMatch != null && defaultMatch != undefined) {
-            const value = defaultMatch[2];
-            // for (let value of defaultResult) {
-            defaultExportName = value;
-            exports.push("default as " + value);
-            // }
+        if (defaultResult != null && defaultResult != undefined) {
+            for (let value of defaultResult) {
+                defaultExportName = value;
+                exports.push("default as " + value);
+            }
             // console.log(defaultResult);
         }
         // const regularResult : string[] = [content.substring(content.search(RegExp(`export (class|interface|type) (\\w+)`)))];
-        const regularMatch = content.match(RegExp(`export (class|interface|type) (\\w+)`));
-        if (regularMatch != null && regularMatch != undefined) {
-            const value = regularMatch[2];
-            // for (let value of regularResult) {
-            if (exports.indexOf(value) != -1 && value != defaultExportName) {
-                exports.push(value);
+        const regularResult = matchAll(content, RegExp(`export (class|interface|type) (\\w+)`, "g"));
+        if (regularResult != null && regularResult != undefined) {
+            for (let value of regularResult) {
+                if (exports.indexOf(value) != -1 && value != defaultExportName) {
+                    exports.push(value);
+                }
+                else if ((value == "Props" || value == "State") && defaultExportName != "") {
+                    exports.push(value + " as " + defaultExportName + value);
+                }
             }
-            else if ((value == "Props" || value == "State") && defaultExportName != "") {
-                exports.push(value + " as " + defaultExportName + value);
-            }
-            // }
         }
         // console.log(regularResult);
         // console.log("Exports");
@@ -158,5 +157,5 @@ class HelloWorldPlugin {
         return exports;
     }
 }
-module.exports = HelloWorldPlugin;
+module.exports = FBarrelPlugin;
 //# sourceMappingURL=index.js.map
