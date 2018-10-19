@@ -2,44 +2,6 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 const path = require('path');
 const fs = require('fs');
-const badgeContent = `
-import * as React from "react";
-import { ComponentSize } from './util/layoutconstants';
-import classNames from 'classnames';
-import { UIState, BrandingColor } from "../components/util/layoutconstants"
-
-export interface BadgeProps {
-  color?: UIState | BrandingColor | "transparent"
-  size?: ComponentSize
-}
-
-const defaultProps: BadgeProps = {
-};
-
-
-export const Badge: React.StatelessComponent<BadgeProps> = (props) => {
-  const classes: string[] = ['re-badge'];
-
-  return (
-    <span
-      className={classNames(classes)}
-    >
-      {props.children}
-    </span>
-  )
-
-
-};
-export default Badger;
-Badge.defaultProps = defaultProps;
-
-export default Badge;
-export default Badge1;
-export default Badge;
-
-
-sadfasdfasfd
-`;
 function matchAll(str, regex) {
     var res = [];
     var m;
@@ -61,13 +23,9 @@ class FBarrelPlugin {
     }
     apply(compiler) {
         compiler.plugin("beforeCompile", () => {
-            // var regex = RegExp("export default (class|interface|type )?(\\w+)", "g");
-            //
-            // console.log(matchAll(badgeContent, regex));
             const dir = "/home/developer/Projects/re-style/src/main";
             const barrelDir = "/home/developer/Projects/re-style/src/main";
             const fileList = this.listFiles(dir, true);
-            // console.log(fileList);
             console.log("Files listed");
             this.writeBarrel(barrelDir, dir, fileList);
             console.log("Barrel written");
@@ -119,41 +77,35 @@ class FBarrelPlugin {
             }
             if (exportList != "") {
                 var nameWithoutExt = "." + file.substring(path.length, file.length - 4); // cut .tsx from filename and path from src/main
-                // console.log("Writing to barrel for " + nameWithoutExt + " (" + file + ")");
+                console.log("Writing to barrel for " + nameWithoutExt + " (" + file + ")");
                 barrelContent += "export { " + exportList + " } from '" + nameWithoutExt + "';\n"; // here write this to file
             }
         }
-        //  console.log(barrelContent);
-        fs.writeFileSync(outPath + "/barrel2.ts", barrelContent);
+        fs.writeFileSync(outPath + "/barrel.ts", barrelContent);
     }
     extractExports(content) {
         var exports = [];
         var defaultExportName = "";
-        // if (this.once) {
         const defaultResult = matchAll(content, RegExp(`export default (class|interface|type )?(\\w+)`, "g"));
-        //console.log(defaultResult);
         if (defaultResult != null && defaultResult != undefined) {
             for (let value of defaultResult) {
                 defaultExportName = value;
                 exports.push("default as " + value);
             }
-            // console.log(defaultResult);
         }
-        // const regularResult : string[] = [content.substring(content.search(RegExp(`export (class|interface|type) (\\w+)`)))];
         const regularResult = matchAll(content, RegExp(`export (class|interface|type) (\\w+)`, "g"));
         if (regularResult != null && regularResult != undefined) {
             for (let value of regularResult) {
-                if (exports.indexOf(value) != -1 && value != defaultExportName) {
-                    exports.push(value);
-                }
-                else if ((value == "Props" || value == "State") && defaultExportName != "") {
-                    exports.push(value + " as " + defaultExportName + value);
+                if (exports.indexOf(value) == -1 && value != defaultExportName) {
+                    if (value != "Props" && value != "State") {
+                        exports.push(value);
+                    }
+                    else if ((value == "Props" || value == "State") && defaultExportName != "") {
+                        exports.push(value + " as " + defaultExportName + value);
+                    }
                 }
             }
         }
-        // console.log(regularResult);
-        // console.log("Exports");
-        // console.log(exports);
         return exports;
     }
 }
