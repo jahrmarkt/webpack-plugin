@@ -2,12 +2,12 @@
   "scripts": {
     "build": "tsc"
   },
-  "name": "webpack-plugin",
-  "version": "1.0.0",
-  "description": "webpack plugin test",
+  "name": "fbarrel-plugin",
+  "version": "0.1.0",
+  "description": "fbarrel webpack plugin",
   "main": "index.tsx",
-  "repository": "git@github.com:jahrmarkt/webpack-plugin.git",
-  "author": "Marko Jahn <marko.jahn@21re.de>",
+  "repository": "git@github.com:21re/fbarrel-plugin.git",
+  "author": "",
   "license": "MIT",
   "private": false,
   "dependencies": {
